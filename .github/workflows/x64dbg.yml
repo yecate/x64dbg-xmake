@@ -11,7 +11,7 @@ jobs:
     runs-on: windows-2019
     steps:
       - name: Checkout
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
         with:
           submodules: 'true'
 
@@ -25,7 +25,7 @@ jobs:
           dir: '${{ github.workspace }}/qt/'
 
       - name: Install Xmake
-      - uses: xmake-io/github-action-setup-xmake@v1
+        uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: branch@dev
 
@@ -35,7 +35,7 @@ jobs:
           xmake
 
       - name: Upload
-      - uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2
         with:
           name: x64dbg
           path: build\windows\x64\release
