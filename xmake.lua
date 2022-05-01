@@ -1,12 +1,10 @@
-add_rules("mode.release", "mode.debug", "syslinks")
+add_rules("mode.release", "mode.debug")
 
-rule("syslinks")
-    after_load(function (target)
-        target:add(
-            "syslinks", "ws2_32", "kernel32", "psapi", "winspool", "gdi32", "ole32",
-            "oleaut32", "advapi32", "shell32", "user32", "opengl32", "comdlg32", "shlwapi",
-            "Winmm", "iphlpapi", "imm32")
-    end)
+add_links(
+    "ws2_32", "kernel32", "psapi", "winspool", "gdi32", "ole32", "oleaut32",
+    "advapi32", "shell32", "user32", "opengl32", "comdlg32", "shlwapi", "Winmm",
+    "iphlpapi", "imm32")
+
 -- ref : https://github.com/xmake-io/xmake/blob/master/xmake/rules/qt/load.lua
 -- xmake 没有提供 widget_shared rules
 rule("qt.widget_shared")
