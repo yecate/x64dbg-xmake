@@ -2,8 +2,9 @@ name: Build-x32dbg
 
 on:
   push:
+    branches: [ master ]
   pull_request:
-  workflow_dispatch:
+    branches: [ master ]
 
 jobs:
   build:
