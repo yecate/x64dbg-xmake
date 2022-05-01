@@ -1,4 +1,5 @@
 name: Build-x64dbg
+
 on:
   push:
   pull_request:
