@@ -52,11 +52,12 @@ rule("qt.widget_shared")
 
 target("zydis_wrapper")
     set_kind("static")
-    add_files("x64dbg/src/zydis_wrapper/zydis/src/*.c", "x64dbg/src/zydis_wrapper/zydis_wrapper.cpp")
+    add_files("x64dbg/src/zydis_wrapper/Zydis/*.c", "x64dbg/src/zydis_wrapper/zydis_wrapper.cpp")
     add_includedirs(
         "x64dbg/src/zydis_wrapper",
-        "x64dbg/src/zydis_wrapper/zydis/include",
-        "x64dbg/src/zydis_wrapper/zydis/src", {public = true})
+        "x64dbg/src/zydis_wrapper/Zydis", {public = true})
+    add_defines("ZYDIS_STATIC_DEFINE")
+
 
 target("loaddll")
     set_kind("binary")
@@ -77,6 +78,8 @@ target("x64dbg_exe")
         is_arch("x64") and "x64dbg/src/exe/icon64.rc" or "x64dbg/src/exe/icon32.rc")
     set_basename(is_arch("x64") and "x64dbg" or "x32dbg")
     add_deps("x64dbg_bridge")
+    -- /DEF:"signaturecheck.def"
+    add_ldflags("/DEF:x64dbg/src/exe/signaturecheck.def")
 
 target("x64dbg_launcher")
     -- 只生成 x86
@@ -122,7 +125,8 @@ target("x64dbg_gui")
         print(string.format("copy deps %s to %s", deps_path, "$(buildir)/$(os)/$(arch)/$(mode)"))
         os.cp(deps_path, "$(buildir)/$(os)/$(arch)/$(mode)")
         local windeployqt = qt.bindir .. "/windeployqt.exe"
-        os.execv(windeployqt, {"--release", "--force", target:targetfile()})
+        local mode = is_mode("debug") and "--debug" or "--release"
+        os.execv(windeployqt, {mode, "--force", target:targetfile()})
     end)
 
 target("x64dbg_dbg")
@@ -145,7 +149,7 @@ target("x64dbg_dbg")
         "x64dbg/src/dbg/msdia/*.cpp",
         "x64dbg/src/dbg/WinInet-Downloader/*.cpp")
 
-    local compiled_libs = {"ntdll", "lz4", "TitanEngine", "jansson", "dbghelp", "DeviceNameResolver", "XEDParse"}
+    local compiled_libs = {"ntdll", "lz4", "TitanEngine", "jansson", "dbghelp", "DeviceNameResolver", "XEDParse", "LLVMDemangle"}
     for i, v in ipairs(compiled_libs) do
         local lib_path = "x64dbg/src/dbg/" .. v
         add_includedirs(lib_path)
