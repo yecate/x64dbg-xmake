@@ -60,8 +60,22 @@ target("zydis_wrapper")
 
 
 target("loaddll")
+    before_build(function(target)
+        -- 去掉
+        -- #pragmacomment(lib, "..\\dbg\\ntdll\\ntdll_x64.lib")
+        -- #pragmacomment(lib, "..\\dbg\\ntdll\\ntdll_x86.lib")
+        io.gsub("x64dbg/src/loaddll/loaddll.cpp", "#pragma ", "//pragma")
+    end)
     set_kind("binary")
     add_files("x64dbg/src/loaddll/*.cpp")
+    local compiled_libs = {"ntdll"}
+    for i, v in ipairs(compiled_libs) do
+        local lib_path = "x64dbg/src/dbg/" .. v
+        -- print(string.format("compile %s", lib_path))
+        add_includedirs(lib_path)
+        add_linkdirs(lib_path)
+        add_links(is_arch("x64") and v .. "_x64" or v .. "_x86")
+    end
 
 target("x64dbg_bridge")
     set_kind("shared")
@@ -79,7 +93,7 @@ target("x64dbg_exe")
     set_basename(is_arch("x64") and "x64dbg" or "x32dbg")
     add_deps("x64dbg_bridge")
     -- /DEF:"signaturecheck.def"
-    add_ldflags("/DEF:x64dbg/src/exe/signaturecheck.def")
+    add_ldflags("/DEF:x64dbg/src/exe/signaturecheck.def", {force = true})
 
 target("x64dbg_launcher")
     -- 只生成 x86
