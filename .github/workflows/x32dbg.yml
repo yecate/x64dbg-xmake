@@ -24,18 +24,13 @@ jobs:
           arch: win32_msvc2015
           dir: '${{ github.workspace }}/qt/'
 
-      - name: Install Xmake
-        uses: xmake-io/github-action-setup-xmake@v1
-        with:
-          xmake-version: branch@dev
-
       - name: Build
         run: |
-          xmake f --qt=${{env.Qt5_Dir}} -a x86
-          xmake
+          xmake.bat f --qt=${{env.Qt5_Dir}} -a x86
+          xmake.bat
 
       - name: Upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: x32dbg
           path: build\windows\x86\release
