@@ -26,8 +26,8 @@ jobs:
 
       - name: Build
         run: |
-          xmake.bat f --qt=${{env.Qt5_Dir}} -a x64
-          xmake.bat
+          ./xmake.bat f --qt=${{env.Qt5_Dir}} -a x64
+          ./xmake.bat
 
       - name: Upload
         uses: actions/upload-artifact@v4
